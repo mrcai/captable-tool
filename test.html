@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cap Table Test</title>
+</head>
+<body>
+    <h1>Cap Table Modeling Tool - Test</h1>
+    <div id="test-results"></div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/errors.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/calculations.js"></script>
+    
+    <script>
+        try {
+            console.log('Testing Cap Table Tool...');
+            
+            // Test 1: Create a company
+            const company = new Company({
+                companyName: 'Test Startup',
+                founderShares: 10000000,
+                optionPoolPercent: 20,
+                exitValuation: 100000000,
+                exitYear: 2030
+            });
+            
+            // Test 2: Add a funding round
+            company.addRound({
+                type: 'Seed',
+                year: 2025,
+                preMoneyValuation: 5000000,
+                investment: 1000000,
+                revenue: 500000
+            });
+            
+            // Test 3: Calculate cap table
+            const capTable = CapTableCalculator.calculateEvolution(company);
+            console.log('Cap table calculated:', capTable);
+            
+            // Test 4: Calculate returns
+            const returns = CapTableCalculator.calculateReturns(capTable, company);
+            console.log('Returns calculated:', returns);
+            
+            // Display results
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = `
+                <h2>Test Results ✅</h2>
+                <p><strong>Company:</strong> ${company.companyName}</p>
+                <p><strong>Stages:</strong> ${capTable.length}</p>
+                <p><strong>Final Founder Ownership:</strong> ${capTable[capTable.length-1].founderOwnership.toFixed(1)}%</p>
+                <p><strong>Total Investment:</strong> £${NumberUtils.formatWithCommas(returns.getTotalInvestment())}</p>
+                <p><strong>All tests passed!</strong></p>
+            `;
+            
+        } catch (error) {
+            console.error('Test failed:', error);
+            document.getElementById('test-results').innerHTML = `
+                <h2>Test Failed ❌</h2>
+                <p><strong>Error:</strong> ${error.message}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
